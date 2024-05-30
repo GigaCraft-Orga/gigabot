@@ -1,15 +1,9 @@
-const { Events, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle,
-    EmbedBuilder
-} = require("discord.js");
-const Register = require("../../database/models/Register");
-const {getMarkdownContent} = require("../../manager/markdown-handler");
+const { Events, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder} = require("discord.js");
 
 module.exports = {
     name: Events.InteractionCreate,
     async execute(interaction) {
         if (!interaction.isButton()) return;
-
-        const guild = await interaction.client.guilds.cache.get(process.env.GUILD_ID);
 
         const usernameInput = new TextInputBuilder()
             .setCustomId("usernameInput")

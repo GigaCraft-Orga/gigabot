@@ -1,7 +1,7 @@
 let { sequelize } = require('../database');
 const {DataTypes} = require("sequelize");
 
-const Register = sequelize.define('register', {
+const Whitelist = sequelize.define('gigacraft_whitelist', {
     action_id: {
         type: DataTypes.BIGINT,
         allowNull: false,
@@ -22,7 +22,7 @@ const Register = sequelize.define('register', {
         allowNull: true,
         defaultValue: null
     },
-    accepted: {
+    allow_to_join: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false
@@ -33,4 +33,4 @@ const Register = sequelize.define('register', {
     },
 );
 
-module.exports = Register;
+module.exports = Whitelist;

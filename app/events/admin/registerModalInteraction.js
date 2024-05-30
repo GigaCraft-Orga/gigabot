@@ -1,5 +1,5 @@
 const {Events} = require("discord.js");
-const Register = require("../../database/models/Register");
+const Whitelist = require("../../database/models/Whitelist");
 const {getMarkdownContent} = require("../../manager/markdown-handler");
 
 const allowedId = ["reasonModal"];
@@ -12,7 +12,7 @@ module.exports = {
         if (!allowedId.includes(interaction.customId)) return;
 
         const guild = await interaction.client.guilds.cache.get(process.env.GUILD_ID);
-        const registration = await Register.findOne({where: {action_id: interaction.message.id}});
+        const registration = await Whitelist.findOne({where: {action_id: interaction.message.id}});
 
         if (!registration)
             return await interaction.reply({
@@ -22,14 +22,8 @@ module.exports = {
 
         // The stored message id is called action_id in the database therefore actionMessage.
         const actionMessage = await interaction.channel.messages.cache.get(interaction.message.id);
-
         const user = await guild.members.cache.get(registration.user_id);
-
-        // The uuid is stored with hyphens by default.
-        const formattedUuid = registration.user_id;
-
         const mod = await guild.members.cache.get(interaction.user.id);
-        const modChannel = await guild.channels.cache.get(process.env.APPLICATION_OUTPUT_CHANNEL);
 
         switch (interaction.customId) {
             case "reasonModal":
@@ -47,7 +41,7 @@ module.exports = {
 
                 await actionMessage.delete();
 
-                Register.destroy({where: {action_id: interaction.message.id}});
+                Whitelist.destroy({where: {action_id: interaction.message.id}});
 
                 break;
         }

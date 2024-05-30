@@ -1,6 +1,6 @@
 const {Events, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder} = require("discord.js");
-const path = require("node:path");
-const Register = require("../../database/models/Register");
+const Whitelist = require("../../database/models/Whitelist");
+const {formatUUID} = require("../../registration/register-utils");
 require('dotenv').config();
 
 module.exports = {
@@ -37,13 +37,13 @@ async function sendRegistration(interaction, outputChannel, isNewPlayer) {
     if (isNewPlayer) {
         embed.setTitle("Registrierung eines neuen Spielers");
         embed.addFields({
-            name: "`🎉` Eingeladen von",
+            name: "`🔗` Eingeladen von",
             value: "↳ `" + interaction.fields.getTextInputValue('invitorInput') + "`"});
     } else {
         embed.setTitle("Registrierung eines bestehenden Spielers");
         const joinInput = interaction.fields.getTextInputValue('joinInput') || "Nicht angegeben";
         embed.addFields({
-            name: "`🎉` Beigetreten",
+            name: "`🚪` Beigetreten",
             value: "↳ `" + joinInput + "`"});
     }
 
@@ -54,10 +54,10 @@ async function sendRegistration(interaction, outputChannel, isNewPlayer) {
         const response = await fetch(url);
         const data = await response.json();
         const uuid = data.id;
-        const formattedUuid = formatUuid(uuid);
+        const formattedUuid = formatUUID(uuid);
         console.log(uuid + " belongs to " + data.name);
 
-        const databaseUuid = await Register.findOne({where: {user_uuid: formattedUuid}});
+        const databaseUuid = await Whitelist.findOne({where: {user_uuid: formattedUuid}});
         if (databaseUuid !== null) return await interaction.editReply({ content: "`❌` Der Spielername ist bereits registriert.", ephemeral: true});
 
         embed.addFields({name: "`🔗` UUID", value: "↳ `" + formattedUuid + "`"});
@@ -82,12 +82,12 @@ async function sendRegistration(interaction, outputChannel, isNewPlayer) {
 
         const message = await outputChannel.send({embeds: [embed], components: [buttonRow]});
 
-        await Register.create({
+        await Whitelist.create({
             action_id: message.id,
             user_id: interaction.user.id,
             user_uuid: formattedUuid,
             assignee_id: null,
-            accepted: false
+            allow_to_join: false
         }).then(() => console.log("Registration of " + formattedUuid + " was successful."));
 
 
@@ -98,8 +98,4 @@ async function sendRegistration(interaction, outputChannel, isNewPlayer) {
         });
         console.error(e);
     }
-}
-
-function formatUuid(uuid) {
-    return uuid.substring(0, 8) + "-" + uuid.substring(8, 12) + "-" + uuid.substring(12, 16) + "-" + uuid.substring(16, 20) + "-" + uuid.substring(20);
 }
