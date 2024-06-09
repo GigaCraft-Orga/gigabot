@@ -1,9 +1,19 @@
 const { Events, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder} = require("discord.js");
+const Whitelist = require("../../database/models/Registration");
+
+const ALLOWED_IDS = ["newButton", "establishedButton"];
 
 module.exports = {
     name: Events.InteractionCreate,
     async execute(interaction) {
         if (!interaction.isButton()) return;
+        if (!ALLOWED_IDS.includes(interaction.customId)) return;
+
+        const registration = await Whitelist.findOne({where: {user_id: interaction.user.id}});
+        if (registration !== null) return await interaction.reply({
+            content: "`❌` Du bist bereits registriert.",
+            ephemeral: true
+        });
 
         const usernameInput = new TextInputBuilder()
             .setCustomId("usernameInput")

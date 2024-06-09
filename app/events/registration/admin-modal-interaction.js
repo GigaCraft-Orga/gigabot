@@ -1,9 +1,12 @@
 const {Events} = require("discord.js");
-const Whitelist = require("../../database/models/Whitelist");
+const Whitelist = require("../../database/models/Registration");
 const {getMarkdownContent} = require("../../manager/markdown-handler");
 
 const allowedId = ["reasonModal"];
 
+/**
+ * The admin-side for the registration process.
+ */
 module.exports = {
     name: Events.InteractionCreate,
     async execute(interaction) {

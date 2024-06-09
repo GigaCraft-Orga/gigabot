@@ -1,5 +1,5 @@
 const { Events, ButtonBuilder, ButtonStyle, ActionRowBuilder, TextInputBuilder, ModalBuilder, TextInputStyle } = require("discord.js");
-const Whitelist = require("../../database/models/Whitelist");
+const Registration = require("../../database/models/Registration");
 const registerUtils = require("../../registration/register-utils");
 const {getMarkdownContent} = require("../../manager/markdown-handler");
 
@@ -16,7 +16,7 @@ module.exports = {
         if (!allowedId.includes(interaction.customId)) return;
 
         const guild = await interaction.client.guilds.cache.get(process.env.GUILD_ID);
-        const registration = await Whitelist.findOne({where: {action_id:interaction.message.id}});
+        const registration = await Registration.findOne({where: {action_id: interaction.message.id}});
 
         if (!registration)
             return await interaction.reply({content: "Diese Registrierung konnte nicht gefunden werden.", ephemeral: true});
@@ -27,7 +27,7 @@ module.exports = {
         const user = await guild.members.cache.get(registration.user_id);
 
         // The uuid is stored with hyphens by default.
-        const formattedUuid = registration.user_id;
+        const formattedUuid = registration.user_uuid;
 
         const mod = await guild.members.cache.get(interaction.user.id);
 
@@ -57,12 +57,13 @@ module.exports = {
                 if (mod.id !== interaction.user.id)
                     return interaction.reply({content: "Diese Registrierung wird von <@" + mod.id + "> bearbeitet.", ephemeral: true});
 
-                registration.allow_to_join = true;
+                registration.processed = true;
                 await registration.save();
 
                 await user.send(await getMarkdownContent("registration-accepted.md", {
-                    userId: user.id,
-                    modDisplayname: mod.displayName
+                    user_id: user.id,
+                    mod_id: mod.id,
+                    code: code
                 }));
 
                 const newButtonRow = new ActionRowBuilder()
