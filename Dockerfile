@@ -1,7 +1,8 @@
 FROM node:20.6.0-alpine
 
-WORKDIR /app
-COPY package.json /app
+WORKDIR /app/gigabot
+COPY package.json /app/gigabot
 RUN npm install
-COPY . /app
+RUN npm run deploy-commands
+COPY . /app/gigabot
 CMD ["npm", "run", "start"]
