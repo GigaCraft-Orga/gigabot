@@ -6,9 +6,6 @@ module.exports = {
         .setDescription('Melde dich für GigaCraft an.'),
     async execute(interaction) {
 
-        if (interaction.inGuild())
-            return await interaction.reply({ content: "Schreibe mir `/register` privat.", ephemeral: true});
-
         const agreeButton = new ButtonBuilder()
             .setCustomId("newButton")
             .setLabel("Ja, ich bin neu")

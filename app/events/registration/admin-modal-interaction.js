@@ -11,7 +11,6 @@ module.exports = {
     name: Events.InteractionCreate,
     async execute(interaction) {
         if (!interaction.isModalSubmit()) return;
-        if (!interaction.inGuild()) return;
         if (!allowedId.includes(interaction.customId)) return;
 
         const guild = await interaction.client.guilds.cache.get(process.env.GUILD_ID);
