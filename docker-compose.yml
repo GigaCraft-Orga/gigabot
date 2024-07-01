@@ -3,4 +3,4 @@ services:
     build: .
     restart: unless-stopped
     volumes:
-      - /etc/dev/.env:/app/.env
+      - /etc/dev/.env:/app/gigabot/.env
