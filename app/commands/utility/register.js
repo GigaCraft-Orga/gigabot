@@ -32,6 +32,6 @@ module.exports = {
             )
             .setColor("#764cdc");
 
-        await interaction.reply({ embeds: [embed] , components: [buttonRow] });
+        await interaction.reply({ embeds: [embed] , components: [buttonRow], ephemeral: true });
     }
 }
