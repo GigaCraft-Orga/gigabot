@@ -51,7 +51,7 @@ async function sendRegistration(interaction, outputChannel, isNewPlayer) {
     } else {
         embed.addFields({
             name: "`🚪` Beigetreten",
-            value: "↳ `" + interaction.fields.getTextInputValue('joinInput') || "Nicht angegeben" + "`"
+            value: "↳ `" + interaction.fields.getTextInputValue('joinInput') + "`" || "Nicht angegeben"
         });
     }
 
