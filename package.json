@@ -5,7 +5,7 @@
   },
   "scripts": {
     "start": "node app/main.js",
-    "deploy-commands": "node app/utils/publish-commands.js",
+    "deploy-commands": "node app/publish-commands.js",
     "dev": "nodemon app/main.js"
   },
   "main": "app/main.js",
