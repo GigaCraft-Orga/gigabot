@@ -1,0 +1,7 @@
+version: '3.9'
+services:
+  gigabot:
+    build: .
+    restart: unless-stopped
+    volumes:
+      - /etc/dev/.env:/app/.env
