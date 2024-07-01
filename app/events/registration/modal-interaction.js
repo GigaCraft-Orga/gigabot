@@ -3,6 +3,8 @@ const Whitelist = require("../../database/models/Registration");
 const {formatUUID, getLabyButton, getProfileButton, getAssignButton} = require("../../registration/register-utils");
 require('dotenv').config();
 
+const ALLOWED_IDS = ["newRegisterModal", "establishedRegisterModal"];
+
 /**
  * The registration process for players.
  */
@@ -10,17 +12,18 @@ module.exports = {
     name: Events.InteractionCreate,
     async execute(interaction) {
         if (!interaction.isModalSubmit()) return;
+        if (!ALLOWED_IDS.includes(interaction.customId)) return;
 
         const guild = await interaction.client.guilds.cache.get(process.env.GUILD_ID);
         const outputChannel = await guild.channels.cache.get(process.env.APPLICATION_OUTPUT_CHANNEL);
 
         switch (interaction.customId) {
             case "newRegisterModal":
-                await interaction.reply({content: "`✅` Deine Antrag ist eingegangen, bitte warte auf die Freischaltung.", ephemeral: true});
+                await interaction.reply({content: "`✅` Dein Antrag ist eingegangen, bitte warte auf deine Freischaltung.", ephemeral: true});
                 await sendRegistration(interaction, outputChannel, true);
                 break;
             case "establishedRegisterModal":
-                await interaction.reply({content: "`✅` Deine Antrag ist eingegangen, bitte warte auf die Freischaltung.", ephemeral: true});
+                await interaction.reply({content: "`✅` Dein Antrag ist eingegangen, bitte warte auf deine Freischaltung.", ephemeral: true});
                 await sendRegistration(interaction, outputChannel, false);
                 break;
         }
@@ -31,7 +34,6 @@ module.exports = {
  * Sends the registration form to the output channel.
  */
 async function sendRegistration(interaction, outputChannel, isNewPlayer) {
-
     const username = interaction.fields.getTextInputValue('usernameInput');
 
     const embed = new EmbedBuilder()
@@ -55,7 +57,15 @@ async function sendRegistration(interaction, outputChannel, isNewPlayer) {
 
     // Fetch the UUID from the Mojang API.
     await getMinecraftProfile(username).then(async (uuid) => {
+
+        const registration = await Whitelist.findOne({where: {user_uuid: uuid}});
+        if (registration !== null) return await interaction.editReply({
+            content: "`❌` Dein Spielername ist bereits registriert.",
+            ephemeral: true
+        });
+
         const formattedUuid = formatUUID(uuid);
+
 
         embed.addFields({name: "`🔗` UUID", value: "↳ `" + formattedUuid + "`"});
 
@@ -79,17 +89,6 @@ async function sendRegistration(interaction, outputChannel, isNewPlayer) {
         });
     });
 }
-
-    /*
-
-    const databaseUuid = await Whitelist.findOne({where: {user_uuid: formattedUuid}});
-    if (databaseUuid !== null) return await interaction.editReply({
-        content: "`❌` Der Spielername ist bereits registriert.",
-        ephemeral: true
-    });
-
-    */
-
 
 /**
  * Fetches the UUID from the Mojang API.

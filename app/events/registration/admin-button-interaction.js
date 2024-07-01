@@ -63,7 +63,6 @@ module.exports = {
                 await user.send(await getMarkdownContent("registration-accepted.md", {
                     user_id: user.id,
                     mod_id: mod.id,
-                    code: code
                 }));
 
                 const newButtonRow = new ActionRowBuilder()

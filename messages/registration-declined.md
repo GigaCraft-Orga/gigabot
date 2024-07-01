@@ -1,7 +1,6 @@
-Moin <@{userId}>,
-leider wurde deine Registrierung von **{modDisplayname} abgelehnt.**
+Hallo <@{user_id}>,
+leider müssen wir dir mitteilen, dass deine Registrierung von <@{mod_id}> abgelehnt wurde.
 
-**{modDisplayname}** hat folgende Begründung angegeben:
-> {message}
-
-Falls du weitere Fragen hast, wende dich bitte an deinem Ansprechpartner.
+*Nachricht von <@{mod_id}>*:
+> {response}
+>

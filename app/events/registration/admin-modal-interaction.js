@@ -37,9 +37,9 @@ module.exports = {
                 });
 
                 await user.send(await getMarkdownContent("registration-declined.md", {
-                    userId: user.id,
-                    modDisplayname: mod.displayName,
-                    message: interaction.fields.getTextInputValue("reasonInput")
+                    user_id: user.id,
+                    mod_id: mod.id,
+                    response: interaction.fields.getTextInputValue("reasonInput")
                 }));
 
                 await actionMessage.delete();
