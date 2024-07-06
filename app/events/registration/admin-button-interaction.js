@@ -59,10 +59,12 @@ module.exports = {
                 registration.processed = true;
                 await registration.save();
 
+                /*
                 await user.send(await getMarkdownContent("registration-accepted.md", {
                     user_id: user.id,
                     mod_id: mod.id,
                 }));
+                 */
 
                 const newButtonRow = new ActionRowBuilder()
                     .addComponents(registerUtils.getLabyButton(formattedUuid), registerUtils.getProfileButton(formattedUuid));
